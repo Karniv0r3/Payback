@@ -22,7 +22,7 @@ python -m playwright install
 python payback.py
 ```
 
-Introduce la URL del formulario falso y el script comenzará a enviar credenciales aleatorias automáticamente. Se detiene con `Ctrl + C`.
+El script te pedirá la URL donde se encuentra el formulario falso. Cuando se la des, Payback detectará los campos y comenzará a enviar credenciales aleatorias automáticamente. Se detiene con `Ctrl + C`.
 
 ### 🕵️ Características
 
