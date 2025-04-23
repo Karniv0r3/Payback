@@ -61,15 +61,11 @@ def detectar_selectores(page):
     print(f"Detectado botón enviar: {boton_enviar_selector}")
     return usuario_selector, contraseña_selector, boton_enviar_selector
 
-def determinar_uso_de_tor(url):
-    dominios_excluidos = [".gov", "localhost", "127.", "192.168.", "trycloudflare.com"]
-    return not any(d in url for d in dominios_excluidos)
-
 def main():
-    print("=== Script Anónimo con Playwright + Tor + User-Agent Rotativo ===")
+    print("=== Script Anónimo con Playwright + Emulación Realista ===")
     url = input("Introduce la URL del formulario (real o de pruebas): ").strip()
-
-    usar_tor = determinar_uso_de_tor(url)
+    usar_tor = input("¿Deseás usar Tor? (s/n): ").strip().lower() == 's'
+    navegador = input("¿Navegador a usar? (chromium/firefox/webkit): ").strip().lower() or "chromium"
     ua = UserAgent()
     contador = 0
 
@@ -81,8 +77,25 @@ def main():
                 print(f"🔌 Usando Tor: {'Sí' if usar_tor else 'No'}")
 
                 proxy_settings = {"server": "socks5://127.0.0.1:9050"} if usar_tor else None
-                browser = p.chromium.launch(headless=True, proxy=proxy_settings)
-                context = browser.new_context(user_agent=user_agent)
+                browser_type = getattr(p, navegador if navegador in ["chromium", "firefox", "webkit"] else "chromium")
+                browser = browser_type.launch(headless=True, proxy=proxy_settings)
+
+                context = browser.new_context(
+                    user_agent=user_agent,
+                    locale="es-ES",
+                    timezone_id="America/Bogota",
+                    viewport={"width": 1280, "height": 720},
+                    screen={"width": 1280, "height": 720},
+                    device_scale_factor=1.0,
+                    is_mobile=False,
+                    has_touch=False,
+                    permissions=["geolocation"],
+                    extra_http_headers={
+                        "Accept-Language": "es-ES,es;q=0.9",
+                        "Upgrade-Insecure-Requests": "1"
+                    }
+                )
+
                 page = context.new_page()
                 page.set_default_timeout(120000)
 
@@ -104,8 +117,6 @@ def main():
                         time.sleep(2)
 
                         page.goto(url)
-
-                        # ⚠️ Verificación: ¿sigue estando el formulario?
                         if page.locator(usuario_selector).count() == 0:
                             print("⚠️ El formulario ya no está disponible. Probablemente fue bloqueado.")
                             return
