@@ -1,2 +1,2 @@
-playwright
-fake-useragent
+playwright>=1.42
+fake-useragent>=1.5
