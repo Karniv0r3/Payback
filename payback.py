@@ -1,3 +1,4 @@
+
 from playwright.sync_api import sync_playwright
 from fake_useragent import UserAgent
 import random, string, time, sys
@@ -13,31 +14,47 @@ def detectar_selectores(page):
     print("\nDetectando selectores del formulario...")
     print("DOM cargado correctamente.\n")
 
-    usuario_selector = contraseña_selector = boton_enviar_selector = None
+    def buscar_selectores(selector_list):
+        for sel in selector_list:
+            loc = page.locator(sel)
+            if loc.count() > 0:
+                return sel
+        return None
 
-    for selector in [
+    posibles_usuarios = [
         "input[name*='user']", "input[name*='email']", "input[name*='login']",
-        "input#username", "input#email", "input[type='text']", "input"
-    ]:
-        if page.locator(selector).count() > 0:
-            usuario_selector = selector
-            break
+        "input[placeholder*='email']", "input[placeholder*='correo']", "input[placeholder*='usuario']",
+        "input[aria-label*='usuario']", "input[aria-label*='email']",
+        "input[id*='user']", "input[class*='user']", "input[class*='login']",
+        "input[type='text']", "input[type='email']", "input[type='tel']", "input"
+    ]
 
-    for selector in ["input[name*='pass']", "input#password", "input[type='password']"]:
-        if page.locator(selector).count() > 0:
-            contraseña_selector = selector
-            break
+    posibles_passwords = [
+        "input[type='password']", "input[name*='pass']", "input[id*='pass']",
+        "input[placeholder*='contraseña']", "input[aria-label*='contraseña']",
+        "input[class*='pass']"
+    ]
 
-    for selector in [
-        "button[type='submit']", "input[type='submit']", "button[name*='login']",
-        "button#login", "button", "input[type='button']"
-    ]:
-        if page.locator(selector).count() > 0:
-            boton_enviar_selector = selector
-            break
+    posibles_botones = [
+        "button[type='submit']", "input[type='submit']", "input[type='button']",
+        "button", "div[role='button']", "span[role='button']",
+        "*[onclick*='login']", "*[onclick*='submit']",
+        "*[name*='login']", "*[id*='login']", "*[class*='login']"
+    ]
+
+    usuario_selector = buscar_selectores(posibles_usuarios)
+    contraseña_selector = buscar_selectores(posibles_passwords)
+    boton_enviar_selector = buscar_selectores(posibles_botones)
 
     if not usuario_selector or not contraseña_selector or not boton_enviar_selector:
-        raise ValueError("No se pudieron detectar todos los selectores necesarios automáticamente.")
+        print("⚠️ No se pudieron detectar todos los selectores. Mostrando diagnóstico...")
+        time.sleep(3)
+        print("\n🔍 Campos detectados en el DOM principal:")
+        for i, inp in enumerate(page.query_selector_all("input"), 1):
+            print(f"  [INPUT {i}] {inp.get_attribute('outerHTML')}")
+        for i, btn in enumerate(page.query_selector_all("button, input[type='submit'], div[role='button'], span[role='button']"), 1):
+            print(f"  [BOTÓN {i}] {btn.get_attribute('outerHTML')}")
+        raise ValueError("Detección automática fallida.")
 
     print(f"Detectado usuario: {usuario_selector}")
     print(f"Detectado contraseña: {contraseña_selector}")
@@ -45,7 +62,7 @@ def detectar_selectores(page):
     return usuario_selector, contraseña_selector, boton_enviar_selector
 
 def determinar_uso_de_tor(url):
-    dominios_excluidos = ["genescol.com", ".web", "localhost", "127.", "192.168."]
+    dominios_excluidos = ["genescol.com", ".web", "localhost", "127.", "192.168.", "trycloudflare.com"]
     return not any(d in url for d in dominios_excluidos)
 
 def main():
@@ -64,12 +81,7 @@ def main():
                 print(f"🔌 Usando Tor: {'Sí' if usar_tor else 'No'}")
 
                 proxy_settings = {"server": "socks5://127.0.0.1:9050"} if usar_tor else None
-
-                browser = p.chromium.launch(
-                    headless=True,
-                    proxy=proxy_settings
-                )
-
+                browser = p.chromium.launch(headless=True, proxy=proxy_settings)
                 context = browser.new_context(user_agent=user_agent)
                 page = context.new_page()
                 page.set_default_timeout(120000)
@@ -79,9 +91,8 @@ def main():
                     usuario_selector, contraseña_selector, boton_enviar_selector = detectar_selectores(page)
 
                     while True:
-                        page.goto(url)
-                        page.wait_for_selector(usuario_selector)
-                        page.wait_for_selector(contraseña_selector)
+                        page.wait_for_selector(usuario_selector, timeout=10000)
+                        page.wait_for_selector(contraseña_selector, timeout=10000)
 
                         correo, contraseña = generar_credenciales()
                         page.fill(usuario_selector, correo)
@@ -91,6 +102,13 @@ def main():
                         contador += 1
                         print(f"[{contador}] Enviado usuario: {correo}, contraseña: {contraseña}")
                         time.sleep(2)
+
+                        page.goto(url)
+
+                        # ⚠️ Verificación: ¿sigue estando el formulario?
+                        if page.locator(usuario_selector).count() == 0:
+                            print("⚠️ El formulario ya no está disponible. Probablemente fue bloqueado.")
+                            return
 
                 except KeyboardInterrupt:
                     print(f"\n🛑 Script detenido por el usuario. Se enviaron {contador} pares de credenciales.")
@@ -102,6 +120,7 @@ def main():
                         browser.close()
                     except:
                         pass
+
     except KeyboardInterrupt:
         print(f"\n🛑 Script detenido por el usuario. Se enviaron {contador} pares de credenciales.")
         sys.exit(0)
