@@ -60,7 +60,7 @@ python -m playwright install
 python payback.py
 ```
 
-El script le solicitará la URL del sitio falso cuando se encuentra el formulario. Cuando se la dé, el script comenzará a enviar credenciales falsas de forma continua. Puede detenerlo con `Ctrl + C`.
+El script le solicitará la URL del sitio falso donde se encuentra el formulario. Cuando se la dé, Payback comenzará a enviar credenciales falsas de forma continua e ininterrumpida. Puede detener el ataque con `Ctrl + C`.
 
 ---
 
