@@ -73,7 +73,15 @@ El script le solicitará la URL del sitio falso donde se encuentra el formulario
 
 ## 🖼️ Capturas de pantalla
 
-(Agregá acá tus imágenes si querés visuales del script en acción)
+### Página falsa (phishing)
+![Página falsa](https://raw.githubusercontent.com/Karniv0r3/Payback/assets/fake-fb.png)
+
+### Payback trabajando
+![Payback trabajando](https://raw.githubusercontent.com/Karniv0r3/Payback/assets/payback-en-uso.png)
+
+### Lo que el delincuente verá
+![Credenciales enviadas](https://raw.githubusercontent.com/Karniv0r3/Payback/assets/credenciales-enviadas.png)
+
 
 ---
 
