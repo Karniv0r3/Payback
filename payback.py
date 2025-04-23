@@ -62,7 +62,7 @@ def detectar_selectores(page):
     return usuario_selector, contraseña_selector, boton_enviar_selector
 
 def determinar_uso_de_tor(url):
-    dominios_excluidos = ["genescol.com", ".web", "localhost", "127.", "192.168.", "trycloudflare.com"]
+    dominios_excluidos = [".gov"]
     return not any(d in url for d in dominios_excluidos)
 
 def main():
