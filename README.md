@@ -1,3 +1,7 @@
+
+![Payback Logo](./payback-logo.png)
+
+
 # Payback Anti-Phishing Script 🛡️
 
 Este script automatiza el envío masivo de credenciales falsas a sitios de phishing que simulan formularios de acceso con el objetivo de **saturar sus bases de datos y sabotear a los delincuentes**.
