@@ -81,7 +81,7 @@ El script le solicitará la URL del sitio falso donde se encuentra el formulario
 ### Payback trabajando
 ![Payback trabajando](https://raw.githubusercontent.com/Karniv0r3/Payback/assets/payback-en-uso.png)
 
-### Lo que el delincuente verá
+### Lo que el delincuente recibirá
 ![Credenciales enviadas](https://raw.githubusercontent.com/Karniv0r3/Payback/assets/credenciales-enviadas.png)
 
 
