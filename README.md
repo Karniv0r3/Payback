@@ -28,6 +28,8 @@ Este script automatiza el envío masivo de credenciales falsas a sitios de phish
 ## 🚀 Instalación
 
 ```bash
+git clone https://github.com/Karniv0r3/Payback.git
+cd Payback.git
 pip install -r requirements.txt
 python -m playwright install
 ```
