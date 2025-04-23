@@ -2,35 +2,81 @@
 ![Payback Logo](./payback-logo.png)
 
 
-# Payback Anti-Phishing Script 🛡️
+# Payback Script Anti-Phishing 🛡️
 
-Este script automatiza el envío masivo de credenciales falsas a sitios de phishing que simulan formularios de acceso con el objetivo de **saturar sus bases de datos y sabotear a los delincuentes**.
+Este script automatiza el envío masivo de credenciales falsas a sitios de phishing, con el objetivo de saturar sus bases de datos y sabotear a los delincuentes.
 
-### ⚙️ Requisitos
+---
+
+## ⚙️ Requisitos
 
 - Python 3.13+
 - [Playwright](https://playwright.dev/python/)
 - [Fake User Agent](https://pypi.org/project/fake-useragent/)
-- (Opcional) Tor en segundo plano si se desea anonimato.
+- (Opcional) Tor instalado y ejecutándose para navegación anónima
 
-### 🚀 Instalación
+---
+
+## ✅ Probado en
+
+- Kali Linux
+- Ubuntu 24.04
+- Fedora 42
+
+---
+
+## 🚀 Instalación
 
 ```bash
 pip install -r requirements.txt
 python -m playwright install
 ```
 
-### 🧠 Uso
+---
+
+## 🧠 Características
+
+- ✅ **Detección automática inteligente de campos de formulario**
+  - Analiza atributos como `name`, `id`, `class`, `placeholder`, `aria-label`
+  - Soporte para `input`, `email`, `tel`, `password`, `textarea` y más
+- ✅ **Detección extendida de botones**
+  - Captura `button`, `input[type=submit]`, `div[role=button]`, `onclick`
+- ✅ **User-Agent rotativo realista**
+  - Basado en `fake-useragent` con selección aleatoria entre dispositivos y navegadores
+- ✅ **Soporte Tor (opcional)**
+  - Detecta automáticamente si se debe usar Tor y enruta por proxy SOCKS5
+- ✅ **Recarga del formulario tras cada envío**
+  - Asegura que el formulario esté siempre limpio para seguir enviando
+- ✅ **Detección de bloqueos por navegador**
+  - Si el formulario desaparece (por bloqueo o redirección), el script se detiene con aviso claro
+- ✅ **Diagnóstico automático si falla la detección**
+  - Muestra todos los campos `input` y botones visibles para facilitar análisis
+
+---
+
+## 🧪 Uso
 
 ```bash
-python3 payback.py
+python payback.py
 ```
 
-El script te pedirá la URL donde se encuentra el formulario falso. Cuando se la des, Payback detectará los campos y comenzará a enviar credenciales aleatorias automáticamente. Se detiene con `Ctrl + C`.
+El script le solicitará la URL del sitio falso cuando se encuentra el formulario. Cuando se la dé, el script comenzará a enviar credenciales falsas de forma continua. Puede detenerlo con `Ctrl + C`.
 
-### 🕵️ Características
+---
 
-- Rotación automática de User-Agent.
-- Uso opcional de Tor para anonimato.
-- Detección automática de campos de usuario/contraseña y botón de envío.
-- Compatible con WordPress y otros formularios.
+## 📌 Notas
+
+- Si el sitio es bloqueado por navegadores (Cloudflare, Firefox, Chrome), puede reiniciar el túnel o cambiar el dominio.
+- El script detecta automáticamente si el formulario fue bloqueado y se detiene de forma segura.
+
+---
+
+## 🖼️ Capturas de pantalla
+
+(Agregá acá tus imágenes si querés visuales del script en acción)
+
+---
+
+## 💬 Contribuciones
+
+Si quiere ayudar a mejorar el script, agregar nuevos modos o integraciones (VPN, CAPTCHA, etc.), siéntase libre de modificarlo a su gusto. ¡Todas las mejoras son bienvenidas!
